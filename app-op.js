@@ -5,12 +5,11 @@
   const _ = require("immutable");
   const util = require("util");
 
-  var google = require('googleapis');
-  const google_key = require("/home/ken/kenec01/google-key-test.json");
-
   const port = 2999;
-  const port_dbfiles = 2998;
+  const port_mailer = 2995;
+  const port_dbfiles = 2990;
   const __app_dbfiles_online = __();
+  const __app_mailer_online = __();
 
   const db = {};
 
@@ -42,6 +41,7 @@
 
       // socket to db app-op/js
       __app_dbfiles_online.t = false;
+      __app_mailer_online.t = false;
       const dbfiles = require('socket.io-client')('http://localhost:' + port_dbfiles);
       dbfiles
         .on('connect', () => {
@@ -56,15 +56,34 @@
           __app_dbfiles_online.t = false;
         });
 
+      const mailer = require('socket.io-client')('http://localhost:' + port_mailer);
+      mailer
+        .on('connect', () => {
+          __.log.t = "#####################app-mailer connected";
+          __app_mailer_online.t = true;
+        })
+        .on('event', (data) => {
+          __.log.t = "some mailer event";
+        })
+        .on('disconnect', () => {
+          __.log.t = "#####################app-mailer disconnected";
+          __app_mailer_online.t = false;
+        });
 
-      const __runDBcheck = __
+
+      const __runDB_Mailer_check = __
         .intervalSeq(_.Seq.of(true), 1000)
         .__(() => {
+          __.log.t = "dbfile:" + __app_dbfiles_online.t;
+          __.log.t = "mailer:" + __app_mailer_online.t;
+          __.log.t = "AND:" + (__app_dbfiles_online.t && __app_mailer_online.t);
           //=========================================
-          const check = (__app_dbfiles_online.t)
+          const check = (__app_dbfiles_online.t && __app_mailer_online.t)
             ? __opRun.t = true
-            : __.log.t = "!! app-dbfiles FIRST !!";
-        //==========================================
+            : () => {
+              __.log.t = "!! app-dbfiles && appMailer FIRST !!";
+              process.exit();
+            }; //==========================================
         });
 
       const __opRun = __()
@@ -82,58 +101,6 @@
 
             });
 
-
-
-
-          const __google = __
-            .intervalSeq(_.Seq.of(true), 0)
-            .__(() => {
-              //----------------------------------------
-              const jwtClient = new google.auth.JWT(
-                google_key.client_email,
-                null,
-                google_key.private_key,
-                ["https://www.googleapis.com/auth/gmail.compose",
-                  "https://www.googleapis.com/auth/gmail.labels"],
-                null
-              );
-
-              jwtClient.authorize((err, tokens) => {
-                if (err) {
-                  console.log(err);
-                } else {
-                  __.log.t = "Google-API Authed!";
-
-                  listLabels(jwtClient);
-                }
-              });
-
-              function listLabels(auth) {
-                __.log.t = "list api";
-                var gmail = google.gmail('v1');
-                gmail.users.labels.list({
-                  auth: auth,
-                  userId: 'adm@bizencoating.com',
-                }, function(err, response) {
-                  if (err) {
-                    console.log('The API returned an error: ' + err);
-                    console.log(response);
-                    return;
-                  }
-                  var labels = response.labels;
-                  if (labels.length == 0) {
-                    console.log('No labels found.');
-                  } else {
-                    console.log('Labels:');
-                    for (var i = 0; i < labels.length; i++) {
-                      var label = labels[i];
-                      console.log('- %s', label.name);
-                    }
-                  }
-                });
-              }
-            //-------------------------------------------
-            }); //--------------------
 
 
 

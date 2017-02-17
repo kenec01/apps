@@ -8,7 +8,7 @@
   const path = require("path");
   const fs = require('fs');
 
-  const port = 2998;
+  const port = 2990;
   const dbDir = "/home/ken/kenec01/__DB_dir/";
 
   const __runDB = __
@@ -76,7 +76,7 @@
       };
 
       const pointObjFromKey = (key) => {
-        cons
+        //    cons
       };
       //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
