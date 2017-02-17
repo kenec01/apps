@@ -2,9 +2,10 @@
   'use strict';
   //============================
   const __ = require("timeengine");
-  const Immutable = require("immutable");
+  const _ = require("immutable");
   const port = 3000;
-  const directory = 'www';
+  const port_op = 2990;
+  const wwwDir = 'www/';
   const http = require('http');
   const url = require('url');
   const path = require("path");
@@ -21,42 +22,46 @@
     "ico": "image/vnd.microsoft.icon"
   // more
   };
-  __.log.t = 'app.es started!';
-  const addObj = (baseObj, newIdx, newEl) => {
-    baseObj[newIdx] = newEl;
-    return baseObj;
-  };
+  __.log.t = 'app.js started!';
 
   const wwwObj = __();
   const wwwLoad = (wwwDir) => {
     __.log.t = "==== wwwLoad ===";
     const wwwObj = __();
     wwwObj.t = {};
-    const seekDir = (dir) => {
-      __.log.t = dir;
-      fs.readdir(dir, (err, dirA) => {
-        if (err) {
-          const path0 = err.path;
-          const path1 = path0.split(wwwDir)[1];
-          //  console.log(path1);
 
-          fs.readFile(path0, (err, file) => {
+    const __runSeek = __
+      .intervalSeq(_.Seq.of(true), 0)
+      .__(() => {
+        seekDir(wwwDir);
+      });
+    const seekDir = (dir) => {
+      __.log.t = "seekDir:" + dir;
+      fs.readdir(dir, (err, dirA) => { //readdir error indicates a file
+        if (err) {
+          const uri = dir.split(wwwDir)[1];
+          const key = path.join("/", uri);
+          console.log("key:" + key); //under wwwDir
+          const file = dir;
+          fs.readFile(file, (err, data) => {
             if (err) {
               __.log.t = 'fileLoadError!';
             } else {
-              __.log.t = "key is " + path1;
-
-              wwwObj.t = addObj(wwwObj.t, path1, file);
+              wwwObj.t = addObj(wwwObj.t, key, data);
             }
           });
         } else {
-          const dummy = dirA.map((file) => {
-            seekDir(dir + "/" + file);
+          const dummy = dirA.map((dirOrFile) => {
+            seekDir(path.join(dir, dirOrFile));
           });
         }
       });
     };
-    seekDir(wwwDir);
+    const addObj = (baseObj, newIdx, newEl) => {
+      baseObj[newIdx] = newEl;
+      return baseObj;
+    };
+
 
     return wwwObj.t;
   };
@@ -83,7 +88,7 @@
     };
 
     const uri = url.parse(req.url).pathname;
-    __.log.t = uri;
+    __.log.t = "uri:" + uri;
 
     if (uri.split("/")[1] === "i") {
       __.log.t = "item page requested!";
@@ -106,30 +111,30 @@
   };
 
   const __runNow = __
-    .intervalSeq(Immutable.Seq.of(true), 0)
+    .intervalSeq(_.Seq.of(true), 0)
     .__(() => {
       __.log.t = 'wwwLoading';
-      wwwObj.t = wwwLoad(__dirname + "/" + directory);
+      wwwObj.t = wwwLoad(__dirname + "/" + wwwDir);
     });
 
 
   const __delay = __
-    .intervalSeq(Immutable.Seq.of(true), 500)
+    .intervalSeq(_.Seq.of(true), 500)
     .__(() => {
       //=========================================
       __.log.t = 'server starting';
 
-      // socket to db server
-      const db = require('socket.io-client')('http://localhost:2999');
+      // socket to db app-op/js
+      const db = require('socket.io-client')('http://localhost:' + port_op);
       db
         .on('connect', () => {
-          __.log.t = "#####################db connected";
+          __.log.t = "#####################app-op connected";
         })
         .on('event', (data) => {
           __.log.t = "some db event";
         })
         .on('disconnect', () => {
-          __.log.t = "#####################db disconnected";
+          __.log.t = "#####################app-op disconnected";
         });
 
       //www server
