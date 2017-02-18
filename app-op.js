@@ -16,21 +16,6 @@
   db["users"] = [];
 
 
-  const newemail = (id) => (__()
-    .__((data) => {
-      __.log.t = "email:" + id + " data changed : " + data;
-    }));
-
-  db.users[10000034] = {};
-
-
-  db.users[10000034]["__email"] = newemail(10000034);
-
-  db.users[10000034].__email.t = "tester@gmail.com";
-  db.users[10000034].__email.t = "tester2@gmail.com";
-  db.users[10000035] = {};
-
-
 
 
   const __runDB = __
@@ -43,16 +28,43 @@
       __app_dbfiles_online.t = false;
       __app_mailer_online.t = false;
       const dbfiles = require('socket.io-client')('http://localhost:' + port_dbfiles);
+
       dbfiles
         .on('connect', () => {
-          __.log.t = "#####################app-op connected";
+          __.log.t = "#####################app-dbfiles connected";
           __app_dbfiles_online.t = true;
+
+
+          const newemail = (id) => (__()
+            .__((data) => {
+              __.log.t = "email:" + id + " data changed : " + data;
+
+              dbfiles.emit('write',
+                ["users", id, {
+                  email: data
+                }],
+                (data) => {
+                  __.log.t = ('result: ' + data);
+                });
+
+            }));
+
+          db.users[10000034] = {};
+
+
+          db.users[10000034]["__email"] = newemail(10000034);
+
+          db.users[10000034].__email.t = "tester@gmail.com";
+          db.users[10000034].__email.t = "tester2@gmail.com";
+          db.users[10000035] = {};
+
+
         })
         .on('event', (data) => {
           __.log.t = "some db event";
         })
         .on('disconnect', () => {
-          __.log.t = "#####################app-op disconnected";
+          __.log.t = "#####################app-dbfiles disconnected";
           __app_dbfiles_online.t = false;
         });
 
@@ -98,6 +110,12 @@
                 .on("disconnect", function() {
                   __.log.t = "###################app.js disconnected";
                 });
+
+
+                //>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+                //>>>>>>>>>>>>>>>>>>>>>>>>>
 
             });
 

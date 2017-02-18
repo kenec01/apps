@@ -40,8 +40,10 @@
               if (err) {
                 __.log.t = 'fileLoadError!';
               } else {
-
-
+                __.log.t = "key:" + key;
+                const val = pointObjFromKey(key);
+                val.obj[val.key1] = data;
+                __.log.t = db;
               }
             });
           } else { // dir is cpnfirmed as a directory
@@ -64,10 +66,13 @@
               }
               : () => {
                 __.log.t = "new DB directory / Obj{}";
-                __.log.t = key;
-                //    __obj.t = {};
+                __.log.t = "key:" + key;
+
+                const val = pointObjFromKey(key);
+                val.obj[val.key1] = {};
 
                 __.log.t = db;
+
               };
 
 
@@ -76,21 +81,43 @@
       };
 
       const pointObjFromKey = (key) => {
-        //    cons
+        __.log.t = "----pointObjFromKey";
+        const keyA0 = key.split("/");
+        __.log.t = "===keyA0====";
+        console.log(util.inspect(keyA0, false, null));
+        const key1 = keyA0[keyA0.length - 1];
+        __.log.t = "key1:" + key1;
+        const keyA1 = _.List(keyA0).pop().toArray();
+        __.log.t = keyA1;
+        const obj = keyA1
+          .reduce((previousValue, currentValue, index, array) => {
+            return previousValue[currentValue];
+          }, db);
+
+        return {
+          obj: obj,
+          key1: key1
+        };
       };
       //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-      const io = require("socket.io")(port);
-      io
+      const op = require("socket.io")(port);
+      op
         .on("connection", function(socket) {
           __.log.t = "###################app-op connected";
           socket
             .on("disconnect", function() {
               __.log.t = "###################app-op disconnected";
+            })
+            .on('populate', (data) => {
+              __.log.t = "populate";
+            })
+            .on('write', (data) => {
+              __.log.t = "write";
+              __.log.t = data;
             });
 
         });
-
 
 
 
