@@ -4,9 +4,9 @@
   const __ = require("timeengine");
   const _ = require("immutable");
   const util = require("util");
-  const url = require('url');
+  const url = require("url");
   const path = require("path");
-  const fs = require('fs');
+  const fs = require("fs");
 
   const port = 2990;
   const dbDir = "/home/ken/kenec01/__DB_dir/";
@@ -28,7 +28,6 @@
         });
       const seekDir = (dir) => {
         __.log.t = "seekDir:" + dir;
-
         const key = dir.split(dbDir)[1];
         __.log.t = "key:" + key;
 
@@ -38,7 +37,7 @@
 
             fs.readFile(dir, (err, data) => {
               if (err) {
-                __.log.t = 'fileLoadError!';
+                __.log.t = "fileLoadError!";
               } else {
                 __.log.t = "key:" + key;
                 const val = pointObjFromKey(key);
@@ -109,10 +108,10 @@
             .on("disconnect", () => {
               __.log.t = "###################app-op disconnected";
             })
-            .on('populate', (data) => {
+            .on("populate", (data) => {
               __.log.t = "populate";
             })
-            .on('write', (data) => {
+            .on("write", (data) => {
               __.log.t = "write";
               __.log.t = data;
             });

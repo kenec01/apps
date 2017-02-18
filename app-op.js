@@ -17,7 +17,6 @@
 
 
 
-
   const __runDB = __
     .intervalSeq(_.Seq.of(true), 0)
     .__(() => {
@@ -27,10 +26,10 @@
       // socket to db app-op/js
       __app_dbfiles_online.t = false;
       __app_mailer_online.t = false;
-      const dbfiles = require('socket.io-client')('http://localhost:' + port_dbfiles);
+      const dbfiles = require("socket.io-client")("http://localhost:" + port_dbfiles);
 
       dbfiles
-        .on('connect', () => {
+        .on("connect", () => {
           __.log.t = "#####################app-dbfiles connected";
           __app_dbfiles_online.t = true;
 
@@ -39,12 +38,12 @@
             .__((data) => {
               __.log.t = "email:" + id + " data changed : " + data;
 
-              dbfiles.emit('write',
+              dbfiles.emit("write",
                 ["users", id, {
                   email: data
                 }],
                 (data) => {
-                  __.log.t = ('result: ' + data);
+                  __.log.t = ("result: " + data);
                 });
 
             }));
@@ -60,24 +59,24 @@
 
 
         })
-        .on('event', (data) => {
+        .on("event", (data) => {
           __.log.t = "some db event";
         })
-        .on('disconnect', () => {
+        .on("disconnect", () => {
           __.log.t = "#####################app-dbfiles disconnected";
           __app_dbfiles_online.t = false;
         });
 
-      const mailer = require('socket.io-client')('http://localhost:' + port_mailer);
+      const mailer = require("socket.io-client")("http://localhost:" + port_mailer);
       mailer
-        .on('connect', () => {
+        .on("connect", () => {
           __.log.t = "#####################app-mailer connected";
           __app_mailer_online.t = true;
         })
-        .on('event', (data) => {
+        .on("event", (data) => {
           __.log.t = "some mailer event";
         })
-        .on('disconnect', () => {
+        .on("disconnect", () => {
           __.log.t = "#####################app-mailer disconnected";
           __app_mailer_online.t = false;
         });

@@ -6,7 +6,7 @@
 //this code is required to transpile by `npm run jsx`
 
 (() => {
-  'use strict';
+  "use strict";
 
   const _ = Immutable;
 
@@ -17,7 +17,7 @@
     .__(() => {
       const TopElement = (
       <div>
-         <p>{"HelloElement!!"}</p>
+          <p>{"HelloElement!!"}</p>
           {TextElement()}
           {"====================="}
           {TimerElement()}
@@ -32,9 +32,8 @@
           {"====================="}
       </div>
       );
-      const mount = ReactDOM.render(TopElement, document.getElementById('container'));
+      const mount = ReactDOM.render(TopElement, document.getElementById("container"));
     });
-
 
 
   const TextElement = () => {
@@ -156,10 +155,9 @@
       .__(() => (<div>{PhysicsElement()}</div>));
 
     return (<div>
-      <div><button onClick={onClick}>{"Physics Start"}</button></div>
+       <div><button onClick={onClick}>{"Physics Start"}</button></div>
       {__Element(__seqEl)}
-           </div>
-      );
+           </div>);
   };
 
 

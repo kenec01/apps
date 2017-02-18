@@ -1,15 +1,15 @@
 (() => {
-  'use strict';
+  "use strict";
   //============================
   const __ = require("timeengine");
   const _ = require("immutable");
   const port = 3000;
   const port_op = 2990;
-  const wwwDir = 'www/';
-  const http = require('http');
-  const url = require('url');
+  const wwwDir = "www/";
+  const http = require("http");
+  const url = require("url");
   const path = require("path");
-  const fs = require('fs');
+  const fs = require("fs");
   const mimeTypes = {
     "html": "text/html",
     "js": "text/javascript",
@@ -22,7 +22,7 @@
     "ico": "image/vnd.microsoft.icon"
   // more
   };
-  __.log.t = 'app.js started!';
+  __.log.t = "app.js started!";
 
   const wwwObj = __();
   const wwwLoad = (wwwDir) => {
@@ -45,7 +45,7 @@
           const file = dir;
           fs.readFile(file, (err, data) => {
             if (err) {
-              __.log.t = 'fileLoadError!';
+              __.log.t = "fileLoadError!";
             } else {
               wwwObj.t = addObj(wwwObj.t, key, data);
             }
@@ -78,7 +78,7 @@
     const writeOut = (contentKey) => {
       res
         .writeHead(200, {
-          'Content-Type': mimeTypes[path.extname(contentKey).split(".")[1]]
+          "Content-Type": mimeTypes[path.extname(contentKey).split(".")[1]]
         });
 
       const content = wwwObj.t[contentKey];
@@ -93,10 +93,10 @@
     if (uri.split("/")[1] === "i") {
       __.log.t = "item page requested!";
     } else if (!wwwObj.t[uri]) {
-      __.log.t = 'no-requestedfile -> index.html';
-      writeOut('/index.html');
+      __.log.t = "no-requestedfile -> index.html";
+      writeOut("/index.html");
     } else {
-      __.log.t = 'file requested -> wrieteout';
+      __.log.t = "file requested -> wrieteout";
       writeOut(uri);
     }
 
@@ -106,14 +106,14 @@
 
 
   const serverUp = () => {
-    console.info('HTTP server listening', port);
+    console.info("HTTP server listening", port);
 
   };
 
   const __runNow = __
     .intervalSeq(_.Seq.of(true), 0)
     .__(() => {
-      __.log.t = 'wwwLoading';
+      __.log.t = "wwwLoading";
       wwwObj.t = wwwLoad(__dirname + "/" + wwwDir);
     });
 
@@ -122,18 +122,18 @@
     .intervalSeq(_.Seq.of(true), 500)
     .__(() => {
       //=========================================
-      __.log.t = 'www server starting';
+      __.log.t = "www server starting";
 
       // socket to db app-op/js
-      const db = require('socket.io-client')('http://localhost:' + port_op);
+      const db = require("socket.io-client")("http://localhost:" + port_op);
       db
-        .on('connect', () => {
+        .on("connect", () => {
           __.log.t = "#####################app-op connected";
         })
-        .on('event', (data) => {
+        .on("event", (data) => {
           __.log.t = "some db event";
         })
-        .on('disconnect', () => {
+        .on("disconnect", () => {
           __.log.t = "#####################app-op disconnected";
         });
 
@@ -142,13 +142,13 @@
         .createServer(request)
         .listen(port, serverUp);
 
-      const io = require('socket.io')(wwwserver);
+      const io = require("socket.io")(wwwserver);
       io
-        .on('connection', (socket) => {
-          __.log.t = 'a user connected';
+        .on("connection", (socket) => {
+          __.log.t = "a user connected";
           socket
-            .on('disconnect', () => {
-              __.log.t = 'a user disconnected';
+            .on("disconnect", () => {
+              __.log.t = "a user disconnected";
             });
         });
         //=========================================
