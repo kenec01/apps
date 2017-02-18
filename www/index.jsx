@@ -1,14 +1,16 @@
 /*global React io ReactBootstrap moment __ marked*/
-
 /*global React ReactDOM __ Immutable __Element*/
-
-//const __Element = require("timeengine-react");
-//this code is required to transpile by `npm run jsx`
 
 (() => {
   "use strict";
+  console.log("index.js running");
+  alert("running");
+  const _ = require("immutable");
+  const __ = require("timeengine");
+  const __Element = require("timeengine-react");
 
-  const _ = Immutable;
+  const ReactDOM = require("react-dom");
+  const ReactBootstrap = require("react-bootstrap");
 
   const socket = io();
 
