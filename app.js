@@ -122,7 +122,7 @@
     .intervalSeq(_.Seq.of(true), 500)
     .__(() => {
       //=========================================
-      __.log.t = 'server starting';
+      __.log.t = 'www server starting';
 
       // socket to db app-op/js
       const db = require('socket.io-client')('http://localhost:' + port_op);

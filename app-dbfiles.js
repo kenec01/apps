@@ -103,10 +103,10 @@
 
       const op = require("socket.io")(port);
       op
-        .on("connection", function(socket) {
+        .on("connection", (socket) => {
           __.log.t = "###################app-op connected";
           socket
-            .on("disconnect", function() {
+            .on("disconnect", () => {
               __.log.t = "###################app-op disconnected";
             })
             .on('populate', (data) => {
