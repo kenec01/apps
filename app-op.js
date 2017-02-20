@@ -21,7 +21,7 @@
     .intervalSeq(_.Seq.of(true), 0)
     .__(() => {
       //=========================================
-      console.info("app-op.js started", port);
+      console.info("app-op started", port);
 
       // socket to db app-op/js
       __app_dbfiles_online.t = false;
@@ -104,10 +104,10 @@
           const io = require("socket.io")(port);
           io
             .on("connection", function(socket) {
-              __.log.t = "###################app.js connected";
+              __.log.t = "###################app-www connected";
               socket
                 .on("disconnect", function() {
-                  __.log.t = "###################app.js disconnected";
+                  __.log.t = "###################app-www disconnected";
                 });
 
 

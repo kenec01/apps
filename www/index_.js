@@ -1,7 +1,5 @@
 "use strict";
 
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
-
 /*global React io ReactBootstrap moment __ marked*/
 /*global React ReactDOM __ Immutable __Element*/
 
@@ -9,74 +7,49 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
   "use strict";
 
   console.log("index.js running");
-  alert("running");
   var _ = require("immutable");
   var __ = require("timeengine");
   var __Element = require("timeengine-react");
 
+  var React = require("react");
   var ReactDOM = require("react-dom");
   var ReactBootstrap = require("react-bootstrap");
 
-  var socket = io();
+  var Button = ReactBootstrap.Button;
+
+  var Navbar = ReactBootstrap.Navbar;
+
+  var Nav = ReactBootstrap.Nav;
+  var NavItem = ReactBootstrap.NavItem;
+  var MenuItem = ReactBootstrap.MenuItem;
+  var NavDropdown = ReactBootstrap.NavDropdown;
+
+  var Table = ReactBootstrap.Table;
+
+  var Jumbotron = ReactBootstrap.Jumbotron;
+  var Panel = ReactBootstrap.Panel;
+
+  var Accordion = ReactBootstrap.Accordion;
 
   var __run = __.intervalSeq(_.Seq.of(true), 0).__(function () {
+    var socket = require("socket.io-client")();
     var TopElement = React.createElement(
       "div",
       null,
-      React.createElement(
-        "p",
-        null,
-        "HelloElement!!"
-      ),
-      TextElement(),
-      "=====================",
-      TimerElement(),
-      "=====================",
-      React.createElement(
-        "div",
-        null,
-        CounterElementStateHistory()
-      ),
-      "=====================",
-      CounterReloadElement(),
-      "=====================",
-      CounterElement(),
-      "=====================",
-      ButtonElement(),
-      "====================="
+      navbar0Instance,
+      navbarInstance,
+      NavTab0(),
+      NavTab(),
+      React.createElement(NavTab99, null),
+      jumbotronInstance,
+      tableInstance
     );
     var mount = ReactDOM.render(TopElement, document.getElementById("container"));
   });
 
-  var TextElement = function TextElement() {
-    var __value = __();
-    var onChange = function onChange(e) {
-      __value.t = e.target.value;
-      __value.log("__value");
-    };
-
-    var __seqEl = __([__value]).__(function (_ref) {
-      var _ref2 = _slicedToArray(_ref, 1),
-          value = _ref2[0];
-
-      return React.createElement(
-        "div",
-        null,
-        React.createElement("input", { type: "text", value: value, onChange: onChange })
-      );
-    });
-
-    __value.t = "default text";
-    return __Element(__seqEl);
-  };
-
-  // `.intervalSeq` is to map Immutable-js infinite Sequence
-  //                       on TimeEngine infinite Sequence
-  // map natural numbers sequence on intervalSeq(1000)
   var TimerElement = function TimerElement() {
-    return __Element(__.intervalSeq(Immutable.Range(), 1000).__(function (count) {
-      return __.log.t = count;
-    }) //console.log
+    return __Element(__.intervalSeq(_.Range(), 1000)
+    //  .__((count) => (/*__.log.t = count*/)) //console.log
     .__(function (count) {
       return React.createElement(
         "div",
@@ -87,203 +60,527 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
     }));
   };
 
-  // memory leak, performance issue
-  //how about games? memoized_reduce is needed
-  // to calculate many elemnents of the long array
-  var CounterElementStateHistory = function CounterElementStateHistory() {
-    var __updn = __(true); //1 or -1 or initially 0
-    var __seqEl = __([__updn]).__(function (_ref3) {
-      var _ref4 = _slicedToArray(_ref3, 1),
-          updn = _ref4[0];
+  var navbar0Instance = React.createElement(Navbar, null);
 
-      return __updn.reduce(function (a, b) {
-        return a + b;
-      });
-    }) //js Array.reduce
-    .__(function (count) {
+  var NavTab99 = React.createClass({
+    displayName: "NavTab99",
+    handleSelect: function handleSelect(selectedKey) {
+      alert("selected " + selectedKey);
+    },
+    render: function render() {
       return React.createElement(
-        "span",
-        null,
-        count
-      );
-    });
-    var init = function init() {
-      return __updn.t = 0;
-    }; //just trigger to view the init
-    var __runNow = __.intervalSeq(Immutable.Seq.of(true), 0).__(init);
-    return React.createElement(
-      "span",
-      null,
-      React.createElement(
-        "button",
-        {
-          onClick: function onClick() {
-            return __updn.t = 1;
-          } },
-        "Up"
-      ),
-      React.createElement(
-        "button",
-        {
-          onClick: function onClick() {
-            return __updn.t = -1;
-          } },
-        "Down"
-      ),
-      __Element(__seqEl)
-    );
-  };
-
-  // no seq object destroy
-  var CounterReloadElement = function CounterReloadElement() {
-    var __clicked = __();
-    var onClick = function onClick() {
-      __clicked.t = true;
-    };
-    var __runNow = __.intervalSeq(Immutable.Seq.of(true), 0).__(onClick);
-    var __seqEl = __([__clicked]).__(function () {
-      return React.createElement(
-        "span",
-        null,
-        CounterElementStateHistory()
-      );
-    });
-    return React.createElement(
-      "div",
-      null,
-      __Element(__seqEl),
-      React.createElement(
-        "button",
-        { onClick: onClick },
-        "Reload"
-      )
-    );
-  };
-
-  var CounterElement = function CounterElement() {
-    var __updn = __();
-    var __count = __([__updn]).__(function (_ref5) {
-      var _ref6 = _slicedToArray(_ref5, 1),
-          updn = _ref6[0];
-
-      return updn === 0 ? 0 : __count.t + updn;
-    });
-    var init = function init() {
-      return __updn.t = 0;
-    }; //initial value of count
-    var __runNow = __.intervalSeq(Immutable.Seq.of(true), 0).__(init);
-    var __seqEl = __([__count]).__(function (_ref7) {
-      var _ref8 = _slicedToArray(_ref7, 1),
-          count = _ref8[0];
-
-      return React.createElement(
-        "span",
-        null,
-        count
-      );
-    });
-    return React.createElement(
-      "div",
-      null,
-      React.createElement(
-        "button",
-        {
-          onClick: function onClick() {
-            return __updn.t = 1;
-          } },
-        "Up"
-      ),
-      React.createElement(
-        "button",
-        {
-          onClick: function onClick() {
-            return __updn.t = -1;
-          } },
-        "Down"
-      ),
-      __Element(__seqEl),
-      React.createElement(
-        "button",
-        {
-          onClick: init },
-        "Reset"
-      )
-    );
-  };
-
-  var PhysicsElement = function PhysicsElement() {
-    //MKS system of units
-    var V0 = 85.0; // m/s
-    var DEG = 40; //degree
-    var THETA = DEG / 180 * Math.PI; //radian
-    var G = 9.8; //gravity const
-    //t seconds elapsed 0msec time resolution
-    var t = __([__.intervalSeq(Immutable.Range(), 10)]).__(function (_ref9) {
-      var _ref10 = _slicedToArray(_ref9, 1),
-          count = _ref10[0];
-
-      return count * 10 / 1000;
-    });
-    var x = __([t]).__(function (_ref11) {
-      var _ref12 = _slicedToArray(_ref11, 1),
-          t = _ref12[0];
-
-      return V0 * Math.cos(THETA) * t;
-    });
-    var y = __([t]).__(function (_ref13) {
-      var _ref14 = _slicedToArray(_ref13, 1),
-          t = _ref14[0];
-
-      return V0 * Math.sin(THETA) * t - 1 / 2 * G * Math.pow(t, 2);
-    }).log();
-    //==================================
-    var Drawscale = 1; //1 dot = 1 meter
-    var __seqEl = __([x, y]) //atomic update
-    .__(function (_ref15) {
-      var _ref16 = _slicedToArray(_ref15, 2),
-          x = _ref16[0],
-          y = _ref16[1];
-
-      return React.createElement(
-        "div",
-        null,
+        Nav,
+        { bsStyle: "pills", justified: true, activeKey: 3, onSelect: this.handleSelect },
         React.createElement(
-          "svg",
-          { height: "250", width: "100%" },
-          React.createElement("circle", { r: "2", fill: "red",
-            cx: 50 + x * Drawscale, cy: 250 - y * Drawscale })
+          NavItem,
+          { eventKey: 1, href: "/home" },
+          "\u8CB7\u3044\u305F\u3044\u30EA\u30B9\u30C8"
+        ),
+        React.createElement(
+          NavItem,
+          { eventKey: 2, title: "Item" },
+          "\u30A2\u30DE\u30C3\u30C1 \u30AA\u30F3\u30E9\u30A4\u30F3\u306B\u3064\u3044\u3066"
+        ),
+        React.createElement(
+          NavItem,
+          { eventKey: 2, title: "Item" },
+          "\u53D6\u5F15\u30CA\u30D3"
+        ),
+        React.createElement(
+          NavItem,
+          { eventKey: 4, title: "Item" },
+          "\u30A2\u30AB\u30A6\u30F3\u30C8"
         )
       );
-    });
-    return __Element(__seqEl);
-  };
-
-  var ButtonElement = function ButtonElement() {
-    var __clicked = __();
-    var onClick = function onClick() {
-      __clicked.t = true;
-    };
-    var __seqEl = __([__clicked]).__(function () {
-      return React.createElement(
-        "div",
-        null,
-        PhysicsElement()
-      );
-    });
-
-    return React.createElement(
-      "div",
+    }
+  });
+  var navbarInstance = React.createElement(
+    Navbar,
+    { fixedTop: true },
+    React.createElement(
+      Navbar.Header,
       null,
       React.createElement(
-        "div",
+        Navbar.Brand,
         null,
         React.createElement(
-          "button",
-          { onClick: onClick },
-          "Physics Start"
+          "a",
+          { href: "#" },
+          "amatch.online"
+        )
+      )
+    )
+  );
+
+  var NavTab0 = function NavTab0() {
+    return React.createElement(Nav, { bsStyle: "pills" });
+  };
+
+  var NavTab = function NavTab() {
+    return React.createElement(Nav, { bsStyle: "pills", fixedTop: true });
+  };
+
+  var jumbotronInstance = React.createElement(
+    Jumbotron,
+    null,
+    React.createElement(
+      "h2",
+      null,
+      "\u30A2\u30DE\u30C3\u30C1 \u30AA\u30F3\u30E9\u30A4\u30F3\u3078\u3088\u3046\u3053\u305D!"
+    ),
+    React.createElement(
+      "h5",
+      null,
+      "\u30A2\u30DE\u30C3\u30C1 \u30AA\u30F3\u30E9\u30A4\u30F3\u306F\u3001",
+      React.createElement("br", null),
+      "\u624B\u6301\u3061\u306EAmazon\u30AE\u30D5\u30C8\u5238\u3092\u4F7F\u3063\u3066\u5831\u916C\u3092\u5F97\u305F\u3044\u4EBA",
+      React.createElement("br", null),
+      "\u3068",
+      React.createElement("br", null),
+      "Amazon\u3067\u58F2\u3089\u308C\u3066\u3044\u308B\u5546\u54C1\u3092\u73FE\u5728\u4FA1\u683C\u3088\u308A\u5B89\u304F\u8CFC\u5165\u3057\u305F\u3044\u4EBA",
+      React.createElement("br", null),
+      "\u3092\u3064\u306A\u3052\u308B\u65B0\u3057\u3044\u30DE\u30C3\u30C1\u30F3\u30B0\u30B5\u30A4\u30C8\u3067\u3059\u3002",
+      React.createElement("br", null)
+    ),
+    React.createElement(
+      "p",
+      null,
+      React.createElement(
+        Button,
+        { bsStyle: "primary" },
+        "\u3053\u306E\u30D0\u30CA\u30FC\u3092\u9589\u3058\u308B"
+      )
+    )
+  );
+
+  var tableInstance = React.createElement(
+    Table,
+    { responsive: true },
+    React.createElement(
+      "thead",
+      null,
+      React.createElement(
+        "tr",
+        null,
+        React.createElement(
+          "th",
+          null,
+          "#"
+        ),
+        React.createElement(
+          "th",
+          null,
+          "Table heading"
+        ),
+        React.createElement(
+          "th",
+          null,
+          "Table heading"
+        ),
+        React.createElement(
+          "th",
+          null,
+          "Table heading"
+        ),
+        React.createElement(
+          "th",
+          null,
+          "Table heading"
+        ),
+        React.createElement(
+          "th",
+          null,
+          "Table heading"
+        ),
+        React.createElement(
+          "th",
+          null,
+          "Table heading"
+        )
+      )
+    ),
+    React.createElement(
+      "tbody",
+      null,
+      React.createElement(
+        "tr",
+        null,
+        React.createElement(
+          "td",
+          null,
+          "1"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
         )
       ),
-      __Element(__seqEl)
-    );
-  };
+      React.createElement(
+        "tr",
+        null,
+        React.createElement(
+          "td",
+          null,
+          "2"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        )
+      ),
+      React.createElement(
+        "tr",
+        null,
+        React.createElement(
+          "td",
+          null,
+          "3"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        )
+      ),
+      React.createElement(
+        "tr",
+        null,
+        React.createElement(
+          "td",
+          null,
+          "1"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        )
+      ),
+      React.createElement(
+        "tr",
+        null,
+        React.createElement(
+          "td",
+          null,
+          "2"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        )
+      ),
+      React.createElement(
+        "tr",
+        null,
+        React.createElement(
+          "td",
+          null,
+          "3"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        )
+      ),
+      React.createElement(
+        "tr",
+        null,
+        React.createElement(
+          "td",
+          null,
+          "1"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        )
+      ),
+      React.createElement(
+        "tr",
+        null,
+        React.createElement(
+          "td",
+          null,
+          "2"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        )
+      ),
+      React.createElement(
+        "tr",
+        null,
+        React.createElement(
+          "td",
+          null,
+          "3"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        ),
+        React.createElement(
+          "td",
+          null,
+          "Table cell"
+        )
+      )
+    )
+  );
+
+  //alert
+  //Closeable alerts
+
+
+  // for FAQ
+  //Accordions
+  var accordionInstance = React.createElement(
+    Accordion,
+    null,
+    React.createElement(
+      Panel,
+      { header: "Collapsible Group Item #1", eventKey: "1" },
+      "Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS."
+    ),
+    React.createElement(
+      Panel,
+      { header: "Collapsible Group Item #2", eventKey: "2" },
+      "Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS."
+    ),
+    React.createElement(
+      Panel,
+      { header: "Collapsible Group Item #3", eventKey: "3" },
+      "Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS."
+    )
+  );
+
+  //===========================================================================
 })();

@@ -21,10 +21,10 @@
       const op = require("socket.io")(port);
       op
         .on("connection", (socket) => {
-          __.log.t = "###################app-op.js connected";
+          __.log.t = "###################app-op connected";
           socket
             .on("disconnect", () => {
-              __.log.t = "###################app-op.js disconnected";
+              __.log.t = "###################app-op disconnected";
             });
 
         });

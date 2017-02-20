@@ -3,8 +3,8 @@
   //============================
   const __ = require("timeengine");
   const _ = require("immutable");
-  const port = 3000;
-  const port_op = 2990;
+  const port_www = 3000;
+  const port_op = 2999;
   const wwwDir = "www/";
   const http = require("http");
   const url = require("url");
@@ -106,7 +106,7 @@
 
 
   const serverUp = () => {
-    console.info("HTTP server listening", port);
+    console.info("HTTP server listening", port_www);
 
   };
 
@@ -140,15 +140,15 @@
       //www server
       const wwwserver = http
         .createServer(request)
-        .listen(port, serverUp);
+        .listen(port_www, serverUp);
 
       const io = require("socket.io")(wwwserver);
       io
         .on("connection", (socket) => {
-          __.log.t = "a user connected";
+          __.log.t = "a site-viewer connected";
           socket
             .on("disconnect", () => {
-              __.log.t = "a user disconnected";
+              __.log.t = "a site-viewer disconnected";
             });
         });
         //=========================================
