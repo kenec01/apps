@@ -8,6 +8,7 @@
   const url = require("url");
   const path = require("path");
   const fs = require("fs");
+  const rimraf = require("rimraf");
 
   const _info = (info, val) => (console.info(info + ": ",
     util.inspect(val, false, null)));
@@ -196,7 +197,15 @@
 
 
                       if (obj.point[key]) {
-                        f1();
+                        if (isObject(obj.point[key])) {
+
+                          f1();
+                        } else {
+
+                          obj.point[key] = {}; //???
+                          f1();
+                        }
+
                       } else {
                         obj.point[key] = {};
                         _info("!!!!!!!!!new key obj", key);
@@ -211,52 +220,107 @@
                 };
 
                 const ff = (obj) => { //for file system
-                  fs.mkdir(obj.path, (err) => {
 
-                    const __now = __
-                      .intervalSeq(_.Seq.of(true), 0)
-                      .__(() => {
-                        if (err) {
+                  _info("PATH++++++++++++++++", obj.path);
+                  fs.mkdir(obj.path, (err) => {
+                    if (err) {
+
+                      fs.stat(obj.path, (err, stats) => {
+                        if (err)
+                          throw err;
+                        if (stats.isFile()) { // file
+                          __.log.t = "was file";
+                          _info("path", obj.path);
+
+                          fs.unlink(obj.path, (err) => {
+                            if (err)
+                              throw err;
+
+                            fs.mkdir(obj.path, (err) => {
+                              if (err)
+                                throw err;
+
+                              ff1(obj);
+                            });
+
+
+                          });
+
+                        } else { //dir exist
+
                           __.log.t = "dir exists";
-                          ff1();
-                        } else {
-                          __.log.t = "dir created";
-                          ff1();
+                          ff1(obj);
                         }
                       });
 
-                    const ff1 = () => {
-                      Object.keys(obj.data)
-                        .map((key) => {
-                          const data1 = obj.data[key];
-                          const path1 = path.join(obj.path, key);
-                          if (isObject(data1)) {
-                            const objF1 = {
-                              data: data1,
-                              path: path1
-                            };
-                            ff(objF1);
-                          } else {
-                            //----------------
-                            fs.writeFile(path1,
-                              obj.data[key], "utf8", (err) => {
-                                if (err)
-                                  throw err;
-                                else {
-                                  __.log.t = "file saved";
-                                }
-
-                              });
-                          //----------------
-                          }
-                        });
-                    };
+                    } else {
+                      __.log.t = "dir created";
+                      ff1(obj);
+                    }
                   });
 
                 };
 
 
 
+
+
+                //====================
+
+                const ff1 = (obj) => {
+                  Object.keys(obj.data)
+                    .map((key) => {
+                      const data1 = obj.data[key];
+                      const path1 = path.join(obj.path, key);
+                      if (isObject(data1)) {
+                        _info("isObject", data1);
+                        const objF1 = {
+                          data: data1,
+                          path: path1
+                        };
+                        ff(objF1);
+                      } else {
+                        _info("isVal>file", path1);
+                        //----------------
+                        const write = () => {
+                          fs.writeFile(path1,
+                            obj.data[key], "utf8", (err) => {
+                              if (err)
+                                throw err;
+                              else {
+                                __.log.t = "file saved";
+                              }
+
+                            });
+                        };
+
+                        // clean up FIRST
+                        fs.stat(path1, (err, stats) => {
+                          if (err)
+                            throw err;
+                          if (stats.isDirectory()) { // file
+                            __.log.t = "was directory";
+                            _info("path", path1);
+                            rimraf(path1, (err) => {
+                              if (err)
+                                throw err;
+
+                              write();
+                            });
+                          } else {
+                            __.log.t = "was directory";
+                            _info("path", obj.path);
+                            write();
+                          }
+
+                        });
+                        //---------------
+
+
+                      //----------------
+                      }
+                    });
+                };
 
                 const obj = {
                   data: data,
@@ -266,30 +330,40 @@
                 f(obj);
                 //---------------------
 
-                const objF = {
-                  data: data,
-                  path: dbDir
-                };
-                ff(objF);
-                //==============================
+
+                const __run = __
+                  .intervalSeq(_.Seq.of(true), 2000)
+                  .__(() => {
+                    const objF = {
+                      data: data,
+                      path: dbDir
+                    };
+                    __.log.t = "//////////////////////////////////////////";
+                    _info("db", db);
+                    ff(objF);
+                  });
+
+                  //==============================
 
               });
 
+              //  _info("isobject", isObject("jhjjhj"));
+              /*
+
+                            _info("db", db);
+                            __.log.t = "dbWriting!!!!!!!!!!!!!!!!!";
+                            __dbW.t = {
+                              "users": {
+                                "10000999": {
+                                  "email": "user999@amtch.online"
+                                }
+                              },
+                              "log": "test1"
+                            };
+                            _info("db", db);
 
 
-              _info("db", db);
-              __.log.t = "dbWriting!!!!!!!!!!!!!!!!!";
-              __dbW.t = {
-                "users": {
-                  "10000999": {
-                    "email": "user999@amtch.online"
-                  }
-                },
-                "log": "test1"
-              };
-              _info("db", db);
-
-
+              */
 
 
               __.log.t = "dbWriting!!!!!!!!!!!!!!!!!";
@@ -298,34 +372,19 @@
               };
               _info("db", db);
 
+              /*
+                            _info("db", db);
+                            __.log.t = "dbWriting!!!!!!!!!!!!!!!!!";
+                            __dbW.t = {
+
+                              "log": {
+                                test: ""
+                              }
+                            };
+                            _info("db", db);
 
 
-              _info("db", db);
-              __.log.t = "dbWriting!!!!!!!!!!!!!!!!!";
-              __dbW.t = {
-                "users": {
-                  "10000999": {
-                    "bank": "usejuiiiuionline"
-                  }
-                },
-                "log": "test1"
-              };
-              _info("db", db);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+              */
 
 
 
