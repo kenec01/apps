@@ -169,67 +169,43 @@
               const __dbW = __();
 
               __dbW.__((data) => {
-                __.log.t = "write";
+                __.log.t = "dbW ________________";
                 __.log.t = data;
 
                 //===============================
 
-                const __runMap = __
-                  .intervalSeq(_.Seq.of(true), 0)
-                  .__(() => {
-                    const obj = {
-                      data: data,
-                      point: db
-                    };
-                    f(obj);
-                    //---------------------
-
-                    const objF = {
-                      data: data,
-                      path: dbDir
-                    };
-                    ff(objF);
-                  });
-
                 const f = (obj) => { //for quick object on mem
-                  if (obj.point) {
-                    //オブジェクトが存在しているときの処理
-                    __.log.t = "obj exists";
-                    f1();
-                  } else {
-                    //オブジェクトが存在していないときの処理
-                    __.log.t = "obj created";
-                    obj.point = {};
-                    f1();
-                  }
+                  _info("obj", obj);
+                  Object.keys(obj.data)
+                    .map((key) => {
+                      _info("key", key);
 
-                  const f1 = () => {
-                    Object.keys(obj.data)
-                      .map((key) => {
-                        const data1 = obj.data[key];
-                        const point1 = path.join(obj.path, key);
-                        if (isObject(data1)) {
+                      const f1 = () => {
+                        //------------------------
+                        if (isObject(obj.data[key])) {
                           const obj1 = {
-                            data: data1,
-                            path: path1
+                            data: obj.data[key],
+                            point: obj.point[key]
                           };
                           f(obj1);
                         } else {
-                          //----------------
-                          fs.writeFile(path1,
-                            obj.data[key], "utf8", (err) => {
-                              if (err)
-                                throw err;
-                              else {
-                                __.log.t = "file saved";
-                              }
-
-                            });
-                        //----------------
+                          obj.point[key] = obj.data[key];
                         }
-                      });
-                  };
+                      //------------------------
+                      };
 
+
+                      if (obj.point[key]) {
+                        f1();
+                      } else {
+                        obj.point[key] = {};
+                        _info("!!!!!!!!!new key obj", key);
+                        _info("new db", db);
+                        f1();
+                      }
+
+
+                    });
 
 
                 };
@@ -279,6 +255,22 @@
 
                 };
 
+
+
+
+                const obj = {
+                  data: data,
+                  point: db
+                };
+
+                f(obj);
+                //---------------------
+
+                const objF = {
+                  data: data,
+                  path: dbDir
+                };
+                ff(objF);
                 //==============================
 
               });
@@ -286,17 +278,56 @@
 
 
               _info("db", db);
-              __.log.t = "dbWriting";
+              __.log.t = "dbWriting!!!!!!!!!!!!!!!!!";
               __dbW.t = {
-                obj: ["users",
-                  "10000999",
-                  "email"],
-                val: "user999@amtch.online"
+                "users": {
+                  "10000999": {
+                    "email": "user999@amtch.online"
+                  }
+                },
+                "log": "test1"
               };
+              _info("db", db);
+
+
+
+
+              __.log.t = "dbWriting!!!!!!!!!!!!!!!!!";
+              __dbW.t = {
+                "log": "test2"
+              };
+              _info("db", db);
+
 
 
               _info("db", db);
-              _info("db info", db.users["10000029"].email);
+              __.log.t = "dbWriting!!!!!!!!!!!!!!!!!";
+              __dbW.t = {
+                "users": {
+                  "10000999": {
+                    "bank": "usejuiiiuionline"
+                  }
+                },
+                "log": "test1"
+              };
+              _info("db", db);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
             });
