@@ -160,231 +160,206 @@
             //==========================================
             });
 
-          //+++++++++++++++++++++++++++++++++++++++++++++++++++++
-          const __runMain = __
-            .intervalSeq(_.Seq.of(true), 2000)
-            .__(() => {
-              //=========================================
-              __.log.t = "@@@@@ runMain@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@";
+          const __dbW = __();
 
-              const __dbW = __();
+          __dbW.__((data) => {
+            __.log.t = "dbW ________________";
+            __.log.t = data;
 
-              __dbW.__((data) => {
-                __.log.t = "dbW ________________";
-                __.log.t = data;
+            //===============================
 
-                //===============================
+            const f = (obj) => { //for quick object on mem
+              _info("obj", obj);
+              Object.keys(obj.data)
+                .map((key) => {
+                  _info("key", key);
 
-                const f = (obj) => { //for quick object on mem
-                  _info("obj", obj);
-                  Object.keys(obj.data)
-                    .map((key) => {
-                      _info("key", key);
-
-                      const f1 = () => {
-                        //------------------------
-                        if (isObject(obj.data[key])) {
-                          const obj1 = {
-                            data: obj.data[key],
-                            point: obj.point[key]
-                          };
-                          f(obj1);
-                        } else {
-                          obj.point[key] = obj.data[key];
-                        }
-                      //------------------------
+                  const f1 = () => {
+                    //------------------------
+                    if (isObject(obj.data[key])) {
+                      const obj1 = {
+                        data: obj.data[key],
+                        point: obj.point[key]
                       };
+                      f(obj1);
+                    } else {
+                      obj.point[key] = obj.data[key];
+                    }
+                  //------------------------
+                  };
 
 
-                      if (obj.point[key]) {
-                        if (isObject(obj.point[key])) {
+                  if (obj.point[key]) {
+                    if (isObject(obj.point[key])) {
 
-                          f1();
-                        } else {
+                      f1();
+                    } else {
 
-                          obj.point[key] = {}; //???
-                          f1();
-                        }
+                      obj.point[key] = {}; //???
+                      f1();
+                    }
 
-                      } else {
-                        obj.point[key] = {};
-                        _info("!!!!!!!!!new key obj", key);
-                        _info("new db", db);
-                        f1();
-                      }
-
-
-                    });
+                  } else {
+                    obj.point[key] = {};
+                    _info("!!!!!!!!!new key obj", key);
+                    _info("new db", db);
+                    f1();
+                  }
 
 
-                };
+                });
 
-                const ff = (obj) => { //for file system
 
-                  _info("PATH++++++++++++++++", obj.path);
-                  fs.mkdir(obj.path, (err) => {
-                    if (err) {
+            };
 
-                      fs.stat(obj.path, (err, stats) => {
+            const ff = (obj) => { //for file system
+
+              _info("PATH++++++++++++++++", obj.path);
+              fs.mkdir(obj.path, (err) => {
+                if (err) {
+
+                  fs.stat(obj.path, (err, stats) => {
+                    if (err)
+                      throw err;
+                    if (stats.isFile()) { // file
+
+                      _info("was file", obj.path);
+
+                      fs.unlink(obj.path, (err) => {
                         if (err)
                           throw err;
-                        if (stats.isFile()) { // file
-                          __.log.t = "was file";
-                          _info("path", obj.path);
 
-                          fs.unlink(obj.path, (err) => {
-                            if (err)
-                              throw err;
+                        fs.mkdir(obj.path, (err) => {
+                          if (err)
+                            throw err;
 
-                            fs.mkdir(obj.path, (err) => {
-                              if (err)
-                                throw err;
-
-                              ff1(obj);
-                            });
-
-
-                          });
-
-                        } else { //dir exist
-
-                          __.log.t = "dir exists";
                           ff1(obj);
-                        }
+                        });
+
+
                       });
 
-                    } else {
-                      __.log.t = "dir created";
+                    } else { //dir exist
+                      _info("dir exists", obj.path);
                       ff1(obj);
                     }
                   });
 
-                };
-
-
-
-
-
-                //====================
-
-                const ff1 = (obj) => {
-                  Object.keys(obj.data)
-                    .map((key) => {
-                      const data1 = obj.data[key];
-                      const path1 = path.join(obj.path, key);
-                      if (isObject(data1)) {
-                        _info("isObject", data1);
-                        const objF1 = {
-                          data: data1,
-                          path: path1
-                        };
-                        ff(objF1);
-                      } else {
-                        _info("isVal>file", path1);
-                        //----------------
-                        const write = () => {
-                          fs.writeFile(path1,
-                            obj.data[key], "utf8", (err) => {
-                              if (err)
-                                throw err;
-                              else {
-                                __.log.t = "file saved";
-                              }
-
-                            });
-                        };
-
-                        // clean up FIRST
-                        fs.stat(path1, (err, stats) => {
-                          if (err)
-                            throw err;
-                          if (stats.isDirectory()) { // file
-                            __.log.t = "was directory";
-                            _info("path", path1);
-                            rimraf(path1, (err) => {
-                              if (err)
-                                throw err;
-
-                              write();
-                            });
-                          } else {
-                            __.log.t = "was directory";
-                            _info("path", obj.path);
-                            write();
-                          }
-
-                        });
-                        //---------------
-
-
-                      //----------------
-                      }
-                    });
-                };
-
-                const obj = {
-                  data: data,
-                  point: db
-                };
-
-                f(obj);
-                //---------------------
-
-
-                const __run = __
-                  .intervalSeq(_.Seq.of(true), 2000)
-                  .__(() => {
-                    const objF = {
-                      data: data,
-                      path: dbDir
-                    };
-                    __.log.t = "//////////////////////////////////////////";
-                    _info("db", db);
-                    ff(objF);
-                  });
-
-                  //==============================
-
+                } else {
+                  _info("dir created", obj.path);
+                  ff1(obj);
+                }
               });
 
+
+              //----------------------
+
+              const ff1 = (obj) => {
+                Object.keys(obj.data)
+                  .map((key) => {
+                    const data1 = obj.data[key];
+                    const path1 = path.join(obj.path, key);
+                    if (isObject(data1)) {
+                      _info("isObject", data1);
+
+                      ff({
+                        data: data1,
+                        path: path1
+                      });
+                    } else {
+                      _info("isVal>file", path1);
+                      //----------------
+                      const write = () => {
+                        fs.writeFile(path1,
+                          data1, "utf8", (err) => {
+                            if (err)
+                              throw err;
+                            else {
+                              _info("file saved", path1);
+                            }
+
+                          });
+                      };
+
+                      _info("clean up FIRST", path1);
+                      fs.stat(path1, (err, stats) => {
+                        if (err) {
+                          __.log.t = "no exist";
+                          write();
+                        } else if (stats.isDirectory()) { // file
+                          __.log.t = "was directory";
+                          rimraf(path1, (err) => {
+                            if (err)
+                              throw err;
+                            __.log.t = "dir deleted";
+                            write();
+                          });
+                        } else {
+                          __.log.t = "was file";
+                          write();
+                        }
+
+                      });
+                      //---------------
+
+
+                    //----------------
+                    }
+                  });
+              };
+
+              //-------------------------
+
+            };
+
+
+            //====================
+
+            const obj = {
+              data: data,
+              point: db
+            };
+
+            f(obj);
+            //---------------------
+
+            const objF = {
+              data: data,
+              path: dbDir
+            };
+            ff(objF);
+
+            //==============================
+
+          });
+
+
+          //+++++++++++++++++++++++++++++++++++++++++++++++++++++
+          const __runMain = __
+            .intervalSeq(_.Seq.of(true), 500)
+            .__(() => {
+              //=========================================
+              __.log.t = "@@@@@ runMain@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@";
+
+
               //  _info("isobject", isObject("jhjjhj"));
-              /*
-
-                            _info("db", db);
-                            __.log.t = "dbWriting!!!!!!!!!!!!!!!!!";
-                            __dbW.t = {
-                              "users": {
-                                "10000999": {
-                                  "email": "user999@amtch.online"
-                                }
-                              },
-                              "log": "test1"
-                            };
-                            _info("db", db);
 
 
-              */
-
-
-              __.log.t = "dbWriting!!!!!!!!!!!!!!!!!";
+              _info("db", db);
+              __.log.t = "dbWriting!///////////////////////////////";
               __dbW.t = {
-                "log": "test2"
+                "users": {},
+                "log": "test9"
               };
               _info("db", db);
 
-              /*
-                            _info("db", db);
-                            __.log.t = "dbWriting!!!!!!!!!!!!!!!!!";
-                            __dbW.t = {
 
-                              "log": {
-                                test: ""
-                              }
-                            };
-                            _info("db", db);
+              __.log.t = "dbWriting!///////////////////////////////";
+              __dbW.t = {
+                "log": "test50"
+              };
+              _info("db!!!!!", db);
 
-
-              */
 
 
 
