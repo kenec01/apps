@@ -4960,9 +4960,7 @@ a.badge:focus {
   padding-bottom: 30px;
   margin-bottom: 30px;
   margin: 0 auto;
-  color: inherit;
-  background-color: #eee;
-  background: url("../img/amazon-gift1.png") center 0 no-repeat;
+  color: inherit; 
 }
 .jumbotron h1,
 .jumbotron .h1 {

@@ -49,16 +49,17 @@
 
 
       const __runDB_Mailer_check = __
-        .intervalSeq(_.Seq.of(true), 1000)
+        .intervalSeq(_.Seq.of(true), 0)
         .__(() => {
           __.log.t = "mailer:" + __app_mailer_online.t;
           //=========================================
-          const check = (__app_mailer_online.t)
-            ? __opRun.t = true
-            : () => {
-              __.log.t = "!! appMailer FIRST !!";
-              process.exit();
-            }; //==========================================
+          __opRun.t = true;
+        /*          const check = (__app_mailer_online.t)
+                    ? __opRun.t = true
+                    : () => {
+                      __.log.t = "!! appMailer FIRST !!";
+                      process.exit();
+                    };*/ //==========================================
         });
 
       const __opRun = __()
@@ -359,7 +360,7 @@
                 "log": "test50"
               };
               _info("db!!!!!", db);
-
+              _info("some", db.log);
 
 
 
