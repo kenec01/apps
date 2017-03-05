@@ -3,15 +3,8 @@
 
 (() => {
   "use strict";
-  console.log("index.js running");
-  /*  const _ = require("immutable");
-    const __ = require("timeengine");
-    const __Element = require("timeengine-react");
+  console.log("index.jsx running");
 
-    const React = require("react");
-    const ReactDOM = require("react-dom");
-    const ReactBootstrap = require("react-bootstrap");
-  */
   const Grid = ReactBootstrap.Grid;
   const Row = ReactBootstrap.Row;
   const Col = ReactBootstrap.Col;
@@ -27,14 +20,14 @@
 
   const Table = ReactBootstrap.Table;
 
-
   const Jumbotron = ReactBootstrap.Jumbotron;
   const Panel = ReactBootstrap.Panel;
 
   const Accordion = ReactBootstrap.Accordion;
 
-
   const _ = Immutable;
+
+  const myPath = "index/";
 
   const _i = (info, val) => (console.info(info + ": ", val));
   const __tabSelected = __()
@@ -69,15 +62,16 @@
       //---------------
       _i("tabSelected", tabSelected);
 
+
       const dummy2 = tabs[tabSelected]
         ? __tab.t = tabSelected
         : (() => {
-          _i("loadingJSX", "...");
-          $.get("index/" + tabSelected + ".jsx",
+          _i("loadingJSX", tabSelected);
+          $.get(myPath + tabSelected + ".jsx",
             (data) => {
               //------------------------
               eval(Babel.transform(data, {
-                presets: ["es2015", "react"]
+                presets: ["latest", "react"]
               }).code);
               //------------------------
               __tab.t = tabs[tabSelected] = tabSelected;

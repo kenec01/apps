@@ -1,12 +1,92 @@
+/*global React io ReactBootstrap moment $ Babel*/
+/*global React ReactDOM __ _  _i Immutable __Element*/
 
-/*global React ReactDOM __ Immutable __Element*/
 
 (() => {
   "use strict";
 
-  window.about = (
-    <p>about</p>
-  );
+  //==============================
+  const myPath = "index/about/";
+  const __tabSelected = __()
+    .__((tab) => {
+      _i("tab", tab);
+    });
+
+
+
+  //--------------------------------
+  const tabs = [];
+  const __tab = __();
+
+  const __dummy = __([__tabSelected])
+    .__(([tabSelected]) => {
+      //---------------
+      _i("tabSelected", tabSelected);
+
+      const dummy2 = tabs[tabSelected]
+        ? __tab.t = tabSelected
+        : (() => {
+          _i("loadingJSX", tabSelected);
+          $.get(myPath + tabSelected + ".jsx",
+            (data) => {
+              //------------------------
+              eval(Babel.transform(data, {
+                presets: ["latest", "react"]
+              }).code);
+              //------------------------
+              __tab.t = tabs[tabSelected] = tabSelected;
+            });
+
+          return true;
+        })();
+        //----------------
+
+      return tabSelected;
+    });
+    //================
+
+  const mainPanel = () => {
+    const __seqEl = __([__tab])
+      .__(([tab]) => (
+
+        <Grid>
+            {window[tab]}
+          </Grid>
+
+      ));
+
+    return __Element(__seqEl);
+  };
+
+  const tabMenu0 = (
+  <Nav bsStyle="tabs">
+              <NavItem >サイト情報</NavItem>
+              <NavItem >特定商取引法の表記</NavItem>
+              <NavItem >会社情報</NavItem>
+    </Nav>  );
+
+  const tabMenu = () => {
+
+    const __seqEl = __([__tabSelected])
+      .__(([tabSelected]) => (
+        <Nav bsStyle="tabs"
+        activeKey={tabSelected}
+        onSelect={(eventKey) => {
+          event.preventDefault();
+          __tabSelected.t = eventKey;
+        }}>
+                  <NavItem eventKey={"site"} >サイト情報</NavItem>
+                  <NavItem eventKey={"hyoki"} >特定商取引法の表記</NavItem>
+                  <NavItem eventKey={"company"} >会社情報</NavItem>
+        </Nav>
+      ));
+
+    return __Element(__seqEl);
+
+  };
+
+
+  //==============================
 
 
   // for FAQ
@@ -24,6 +104,13 @@
         </Panel>
       </Accordion>
   );
+
+
+  const TopElement = (<div>sdfdsffd
+         {tabMenu()}
+         {mainPanel()} </div>);
+  window.about = TopElement ;
+
 
 //==========================================
 })();
