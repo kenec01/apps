@@ -192,12 +192,12 @@
   );
 
 
-  window.request = (
+  const myPath = "index/request";
+  window[myPath] = (
     <div>
     {tableInstance}
     </div>
   );
-
 
 
 })();

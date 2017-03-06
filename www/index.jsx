@@ -27,7 +27,7 @@
 
   const _ = Immutable;
 
-  const myPath = "index/";
+  const myPath = "index";
 
   const _i = (info, val) => (console.info(info + ": ", val));
   const __tabSelected = __()
@@ -49,7 +49,6 @@
 
       const mount = ReactDOM
         .render(TopElement, document.getElementById("container"));
-
       __tabSelected.t = "request";
 
     });
@@ -62,12 +61,11 @@
       //---------------
       _i("tabSelected", tabSelected);
 
-
-      const dummy2 = tabs[tabSelected]
+      const dummy2 = (typeof tabs[tabSelected] !== "undefined")
         ? __tab.t = tabSelected
         : (() => {
           _i("loadingJSX", tabSelected);
-          $.get(myPath + tabSelected + ".jsx",
+          $.get(myPath + "/" + tabSelected + ".jsx",
             (data) => {
               //------------------------
               eval(Babel.transform(data, {
@@ -85,12 +83,13 @@
     });
     //================
 
+
   const mainPanel = () => {
     const __seqEl = __([__tab])
       .__(([tab]) => (
 
         <Grid>
-          {window[tab]}
+          {window[myPath + "/" + tab]}
         </Grid>
 
       ));
@@ -138,8 +137,14 @@
   {tabMenu0}</Navbar>
   );
 
+  const fixedStyle = {
+
+    "background-color": "white"
+  };
+
   const navbar = (
-  <Navbar fixedTop={true}>
+  <Navbar fixedTop={true}
+  style ={fixedStyle}>
           <Navbar.Header>
               <Navbar.Brand>
                 <a href="#">amatch.online</a>

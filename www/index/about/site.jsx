@@ -3,9 +3,28 @@
 
 (() => {
   "use strict";
+  const myPath = "index/about/site";
 
-  window.site = (
-    <p>site</p>
+  window[myPath] = (
+    <div>
+    <p>site!!!!!!!</p>
+      <p>site!!!!!!!</p>
+        <p>site!!!!!!!</p>
+          <p>site!!!!!!!</p>
+            <p>site!!!!!!!</p>
+              <p>site!!!!!!!</p>
+              <p>site!!!!!!!</p>
+                <p>site!!!!!!!</p>
+                  <p>site!!!!!!!</p>
+                    <p>site!!!!!!!</p>
+                      <p>site!!!!!!!</p>
+                        <p>site!!!!!!!</p>
+                        <p>site!!!!!!!</p>
+                          <p>site!!!!!!!</p>
+                            <p>site!!!!!!!</p>
+                              <p>site!!!!!!!</p>
+                                <p>site!!!!!!!</p>
+                                  <p>site!!!!!!!</p></div>
   );
 
 

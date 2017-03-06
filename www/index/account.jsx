@@ -4,7 +4,8 @@
 (() => {
   "use strict";
 
-  window.account = (
+  const myPath = "index/account";
+  window[myPath] = (
     <p>account</p>
   );
 })();

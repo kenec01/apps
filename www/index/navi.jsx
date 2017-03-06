@@ -4,10 +4,10 @@
 (() => {
   "use strict";
 
-  window.navi = (
+  const myPath = "index/navi";
+  window[myPath] = (
     <p>navi</p>
   );
-
 
   const jumbotronInstance = (
   <Jumbotron center-block>
