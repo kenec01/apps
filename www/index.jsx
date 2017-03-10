@@ -35,7 +35,6 @@
       _i("tab", tab);
     });
 
-
   const __run = __
     .intervalSeq(_.Seq.of(true), 0)
     .__(() => {
@@ -74,7 +73,6 @@
               //------------------------
               __tab.t = tabs[tabSelected] = tabSelected;
             });
-
           return true;
         })();
         //----------------

@@ -1,29 +1,59 @@
-
-/*global React ReactDOM __ Immutable __Element*/
+/*global React io ReactBootstrap moment $ Babel*/
+/*global React ReactDOM __ _  _i Immutable __Element*/
 
 (() => {
   "use strict";
-
+  //==============================
   const myPath = "index/navi";
-  window[myPath] = (
-    <p>navi</p>
+  //--------------------------------
+  const __tabSelected = [];
+  const genAccordionChild = (key) => {
+    const __seqEl = __();
+    const __dummy = __([__tabSelected[key]])
+      .__(() => {
+        const dummy2 = (typeof __seqEl.t !== "undefined")
+          ? true
+          : (() => {
+           _i("loading",myPath + "/" + key);
+            $.get(myPath + "/" + key + ".jsx",
+              (data) => {
+                //------------------------
+                eval(Babel.transform(data, {
+                  presets: ["latest", "react"]
+                }).code);
+                //------------------------
+                __seqEl.t = window[myPath + "/" + key];
+              });
+          })();
+      });
+    return __Element(__seqEl);
+  };
+
+  __tabSelected["navi1"] = __();
+  __tabSelected["navi2"] = __();
+  __tabSelected["navi3"] = __();
+
+  const accordion = (
+  <Accordion
+  onSelect={(eventKey) => {
+    __tabSelected[eventKey].t = true;
+  }}>
+              <Panel eventKey={"navi1"} header="ナビ１" >
+                {genAccordionChild("navi1") }
+              </Panel>
+              <Panel eventKey={"navi2"} header="ナビ２" >
+                {genAccordionChild("navi2") }
+              </Panel>
+              <Panel eventKey={"navi3"} header="ナビ３" >
+                {genAccordionChild("navi3") }
+              </Panel>
+            </Accordion>
   );
 
-  const jumbotronInstance = (
-  <Jumbotron center-block>
-        <h2>アマッチ オンラインへようこそ!</h2>
-        <h5>
-          アマッチ オンラインは、<br/>
-        手持ちのAmazonギフト券を使って報酬を得たい人<br/>
-        と<br/>
-        Amazonで売られている商品を現在価格より安く購入したい人<br/>
-        をつなげる新しいマッチングサイトです。<br/>
-      </h5>
+  //================
 
-        <p><Button bsStyle="primary">このバナーを閉じる</Button></p>
-      </Jumbotron>
-  );
-
-
-//=====================
+  const TopElement = (<div>
+    {accordion}</div>);
+  window[myPath] = TopElement ;
+//==========================================
 })();
