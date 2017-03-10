@@ -8,7 +8,6 @@ const myPath = "index/navi/navi1/navi1";
   //--------------------------------
   window[myPath] = (
     <div>
-
       <p>site!!!!!!!</p>
         <p>site!!!!!!!</p>
           <p>site!!!!!!!</p>
@@ -28,6 +27,6 @@ const myPath = "index/navi/navi1/navi1";
                                   <p>site!!!!!!!</p></div>
   );
 
- 
+
 //==========================================
 })();
