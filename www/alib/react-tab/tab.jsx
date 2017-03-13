@@ -49,9 +49,15 @@
         );
     },
     _renderContent() {
+      console.log("@@@@@@:" + this.state.selected);
       return (
-        <div className="tabs__content">
-        {this.props.children[this.state.selected]}
+        <div>
+        {this.props.children.map((el, index) => (
+          <div className={this.state.selected === index ? "" : "hidden"}>
+            <div className="tabs__content">
+              {el}
+            </div>
+          </div>))}
       </div>
         );
     },
