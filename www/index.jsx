@@ -7,13 +7,17 @@
   const _i = (info, val) => (console.info(info + ": ", val));
 
   const myPath = "index";
-
-
   const _ = Immutable;
-
   const Navbar = ReactBootstrap.Navbar;
   const Nav = ReactBootstrap.Nav;
   const NavItem = ReactBootstrap.NavItem;
+  const Accordion = ReactBootstrap.Accordion;
+
+  const Table = ReactBootstrap.Table;
+
+  const Button = ReactBootstrap.Button;
+  const Jumbotron = ReactBootstrap.Jumbotron;
+  const Panel = ReactBootstrap.Panel;
 
   const __run = __
     .intervalSeq(_.Seq.of(true), 0)
@@ -24,13 +28,10 @@
           {spacer}
           {TabElement}
           </div>);
-
-
       const mount = ReactDOM
         .render(TopElement, document.getElementById("container"));
 
-        //  __tabSelected.t = "request";
-
+    //  __tabSelected.t = "request";
     });
 
   const fixedStyle = {
@@ -48,96 +49,42 @@
   };
   const spacer = (<div style ={spacerStyle}></div>);
 
+  const getTabContent = (key) => {
+    _i("new Accordion", key);
+    const __seqEl = __()
+      .log("__seqEl!!!");
+
+    $.get(myPath + "/" + key + ".jsx",
+      (data) => {
+        _i("data", data);
+        //------------------------
+        eval(Babel
+          .transform(data, {
+            presets: ["latest", "react"]
+          })
+          .code);
+        //------------------------
+        _i("x", __seqEl.t = window[myPath + "/" + key]);
+      });
+
+    return __Element(__seqEl);
+  };
+
   const TabElement = (<div>
-    <Tabs selected={2}>
+    <Tabs selected={1}>
       <Pane label="アマッチについて">
-        <div>アマッチについて</div>
+          {getTabContent("about")}
       </Pane>
       <Pane label="リクエストリスト">
-        <div>    <div>
-            <p>site!!!!!!!</p>
-              <p>site!!!!!!!</p>
-                <p>site!!!!!!!</p>
-                  <p>site!!!!!!!</p>
-                    <p>site!!!!!!!</p>
-                      <p>site!!!!!!!</p>
-                      <p>site!!!!!!!</p>
-                        <p>site!!!!!!!</p>
-                          <p>site!!!!!!!</p>
-                            <p>site!!!!!!!</p>
-                              <p>site!!!!!!!</p>
-                                <p>site!!!!!!!</p>
-                                <p>site!!!!!!!</p>
-                                  <p>site!!!!!!!</p>
-                                    <p>site!!!!!!!</p>
-                                      <p>site!!!!!!!</p>
-                                        <p>site!!!!!!!</p>
-                                          <p>site!!!!!!!</p></div>
-                                          <div>
-                                          <p>site!!!!!!!</p>
-                                            <p>site!!!!!!!</p>
-                                              <p>site!!!!!!!</p>
-                                                <p>site!!!!!!!</p>
-                                                  <p>site!!!!!!!</p>
-                                                    <p>site!!!!!!!</p>
-                                                    <p>site!!!!!!!</p>
-                                                      <p>site!!!!!!!</p>
-                                                        <p>site!!!!!!!</p>
-                                                          <p>site!!!!!!!</p>
-                                                            <p>site!!!!!!!</p>
-                                                              <p>site!!!!!!!</p>
-                                                              <p>site!!!!!!!</p>
-                                                                <p>site!!!!!!!</p>
-                                                                  <p>site!!!!!!!</p>
-                                                                    <p>site!!!!!!!</p>
-                                                                      <p>site!!!!!!!</p>
-                                                                        <p>site!!!!!!!</p></div>  <div>
-                                                                          <p>site!!!!!!!</p>
-                                                                            <p>site!!!!!!!</p>
-                                                                              <p>site!!!!!!!</p>
-                                                                                <p>site!!!!!!!</p>
-                                                                                  <p>site!!!!!!!</p>
-                                                                                    <p>site!!!!!!!</p>
-                                                                                    <p>site!!!!!!!</p>
-                                                                                      <p>site!!!!!!!</p>
-                                                                                        <p>site!!!!!!!</p>
-                                                                                          <p>site!!!!!!!</p>
-                                                                                            <p>site!!!!!!!</p>
-                                                                                              <p>site!!!!!!!</p>
-                                                                                              <p>site!!!!!!!</p>
-                                                                                                <p>site!!!!!!!</p>
-                                                                                                  <p>site!!!!!!!</p>
-                                                                                                    <p>site!!!!!!!</p>
-                                                                                                      <p>site!!!!!!!</p>
-                                                                                                        <p>site!!!!!!!</p></div>  <div>
-                                                                                                          <p>site!!!!!!!</p>
-                                                                                                            <p>site!!!!!!!</p>
-                                                                                                              <p>site!!!!!!!</p>
-                                                                                                                <p>site!!!!!!!</p>
-                                                                                                                  <p>site!!!!!!!</p>
-                                                                                                                    <p>site!!!!!!!</p>
-                                                                                                                    <p>site!!!!!!!</p>
-                                                                                                                      <p>site!!!!!!!</p>
-                                                                                                                        <p>site!!!!!!!</p>
-                                                                                                                          <p>site!!!!!!!</p>
-                                                                                                                            <p>site!!!!!!!</p>
-                                                                                                                              <p>site!!!!!!!</p>
-                                                                                                                              <p>site!!!!!!!</p>
-                                                                                                                                <p>site!!!!!!!</p>
-                                                                                                                                  <p>site!!!!!!!</p>
-                                                                                                                                    <p>site!!!!!!!</p>
-                                                                                                                                      <p>site!!!!!!!</p>
-                                                                                                                                        <p>site!!!!!!!</p></div></div>
+          {getTabContent("request")}
       </Pane>
       <Pane label="取引ナビ">
-        <div>  ナビ</div>
+          {getTabContent("navi")}
       </Pane>
       <Pane label="アカウント">
-        <div>アカウント情報!</div>
+          {getTabContent("account")}
       </Pane>
     </Tabs>
       </div>);
-
-
 //===========================================================================
 })();
