@@ -8,22 +8,32 @@
   //--------------------------------
   const __tabSelected = [];
   const genAccordionChild = (key) => {
-    const __seqEl = __();
+    _i("new Accordion", key);
+    const __seqEl = __()
+      .log("__seqEl!!!");
     const __dummy = __([__tabSelected[key]])
       .__(() => {
+        _i("key", key);
+        _i(" __seqEl.t", __seqEl.t);
+
         const dummy2 = (typeof __seqEl.t !== "undefined")
           ? true
           : (() => {
-            _i("loading",myPath + "/" + key);
+            _i("loading", myPath + "/" + key);
+
             $.get(myPath + "/" + key + ".jsx",
               (data) => {
-                //  _i("data",data);
+                _i("data", data);
                 //------------------------
-                eval(Babel.transform(data, {
-                  presets: ["latest", "react"]
-                }).code);
-                //------------------------
-                __seqEl.t = window[myPath + "/" + key];
+                eval(Babel
+                  .transform(data, {
+                    presets: ["latest", "react"]
+                  })
+                  .code);
+                  //------------------------
+
+                _i("x", __seqEl.t = window[myPath + "/" + key]);
+
               });
           })();
       });

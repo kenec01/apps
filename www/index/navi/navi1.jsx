@@ -15,7 +15,7 @@
         const dummy2 = (typeof __seqEl.t !== "undefined")
           ? true
           : (() => {
-               _i("loading",myPath + "/" + key);
+            _i("loading", myPath + "/" + key);
             $.get(myPath + "/" + key + ".jsx",
               (data) => {
                 //------------------------
@@ -29,6 +29,7 @@
       });
     return __Element(__seqEl);
   };
+
 
   __tabSelected["navi1"] = __();
   __tabSelected["navi2"] = __();

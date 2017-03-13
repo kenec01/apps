@@ -3,11 +3,11 @@
 
 (() => {
   "use strict";
-  const myPath = "index/navi/navi3";
+  const myPath = "index/navi/navi1/navi3";
 
   window[myPath] = (
     <div>
- 
+
       <p>site!!!!!!!</p>
         <p>site!!!!!!!</p>
           <p>site!!!!!!!</p>

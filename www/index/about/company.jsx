@@ -9,6 +9,6 @@
   window[myPath] = (
     <div>company
       </div>
-  );
+  );  
 
 })();
